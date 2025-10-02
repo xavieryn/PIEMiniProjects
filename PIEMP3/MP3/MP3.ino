@@ -16,10 +16,8 @@
   bool start = false; 
   bool middle = false;
 
-  const int slowSpeed = 25; // seems like 15 is the minimum because of friction
-  const int fastSpeed = slowSpeed*2;
+  const int slowSpeed = 30; // seems like 15 is the minimum because of friction
   const int turningSpeed = slowSpeed*1.7;
-  int factor = 1;
 
 
 void setup() {
@@ -39,18 +37,17 @@ void setup() {
 }
 
 void loop() {
-  // int l = digitalRead(irSensorLeftPin);
-  // int m = digitalRead(irSensorMiddlePin);
-  // int r = digitalRead(irSensorRightPin);
-  // Serial.println("Left: " + String(l) + " - Middle:  " + String(m) + " - Right: " + String(r));
+  int l = digitalRead(irSensorLeftPin);
+  int m = digitalRead(irSensorMiddlePin);
+  int r = digitalRead(irSensorRightPin);
+  Serial.println("Left: " + String(l) + " - Middle:  " + String(m) + " - Right: " + String(r));
   // Serial.println("____________________________________");
-
   int buttonState = digitalRead(buttonPin); // read to see if start button has been pressed
   if (buttonState == HIGH){
     start = true;
   }
   if (start == true) {
-    delay(1000);
+    //delay(1000);
     drive();
   }
 }
@@ -62,16 +59,20 @@ void drive(){
 
   if (leftSensorVal == LOW){
       leftMotor->setSpeed(0); // 0 - 255
-      rightMotor->setSpeed(turningSpeed*factor);
+      rightMotor->setSpeed(turningSpeed);
       // Serial.println("Turning left");
    } else if (rightSensorVal == LOW){
       leftMotor->setSpeed(turningSpeed); // 0 - 255
-      rightMotor->setSpeed(0*factor);
+      rightMotor->setSpeed(0);
       // Serial.println("Turning right");
   } else if (middleSensorVal == LOW){
       leftMotor->setSpeed(slowSpeed); // 0 - 255
-      rightMotor->setSpeed(slowSpeed*factor);
+      rightMotor->setSpeed(slowSpeed);
       // Serial.println("Going straight");
+  }
+  else{
+     leftMotor->setSpeed(slowSpeed); // 0 - 255
+      rightMotor->setSpeed(slowSpeed);
   }
 
 }
