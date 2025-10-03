@@ -15,9 +15,12 @@
 
   bool start = false; 
   bool middle = false;
+  bool sensorTrigger = false;
 
   const int slowSpeed = 30; // seems like 15 is the minimum because of friction
-  const int turningSpeed = slowSpeed*1.7;
+  const int turningSpeed = slowSpeed*1.3;
+  const int testSpeed = 20;
+  const int delayVar = 100;
 
 
 void setup() {
@@ -57,22 +60,24 @@ void drive(){
   int middleSensorVal = digitalRead(irSensorMiddlePin);
   int rightSensorVal = digitalRead(irSensorRightPin);
 
+  delay(delayVar);
   if (leftSensorVal == LOW){
-      leftMotor->setSpeed(0); // 0 - 255
+      leftMotor->setSpeed(0); // normally is 0
       rightMotor->setSpeed(turningSpeed);
       // Serial.println("Turning left");
    } else if (rightSensorVal == LOW){
       leftMotor->setSpeed(turningSpeed); // 0 - 255
-      rightMotor->setSpeed(0);
+      rightMotor->setSpeed(0); // normally is 0 
       // Serial.println("Turning right");
-  } else if (middleSensorVal == LOW){
-      leftMotor->setSpeed(slowSpeed); // 0 - 255
-      rightMotor->setSpeed(slowSpeed);
-      // Serial.println("Going straight");
-  }
+  } 
+  // else if (middleSensorVal == LOW){
+  //     leftMotor->setSpeed(slowSpeed); // 0 - 255
+  //     rightMotor->setSpeed(slowSpeed);
+  //     // Serial.println("Going straight");
+  // }
   else{
-     leftMotor->setSpeed(slowSpeed); // 0 - 255
-      rightMotor->setSpeed(slowSpeed);
-  }
+      leftMotor->setSpeed(slowSpeed); // 0 - 255
+       rightMotor->setSpeed(slowSpeed);
+   }
 
 }
