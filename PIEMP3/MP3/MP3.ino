@@ -21,7 +21,7 @@
   bool hitRight = false;
 
   const int slowSpeed = 30; // seems like 15 is the minimum because of friction
-  const int turningSpeed = slowSpeed*1.3; // needs to turn a little faster because sometimes will stall out with just 30
+  int turningSpeed = slowSpeed*1.3; // needs to turn a little faster because sometimes will stall out with just 30
 
 void setup() {
   pinMode(2, INPUT); // left sensor
@@ -37,6 +37,8 @@ void setup() {
   leftMotor->run(FORWARD); // these two are flipped, so one is forward and one is backward, but it results in it going forward
   rightMotor->setSpeed(0); 
   rightMotor->run(BACKWARD);
+  Serial.println("Enter a number:");
+
 }
 
 void loop() {
@@ -48,16 +50,28 @@ void loop() {
   // Serial.println("Left: " + String(l) + " - Middle:  " + String(ml) + " - Middle:  " + String(mr) + " - Right: " + String(r));
   // Serial.println(String(l) + "," + String(ml) + "," + String(mr) + "," + String(r));
 
+  if (Serial.available() > 0) {
+  String input = Serial.readStringUntil('\n');  // read until newline
+  input.trim();  // remove whitespace or carriage return
+  if (input.length() > 0) {
+    int newSpeed = input.toInt();
+    turningSpeed = newSpeed;  // update global speed
+    Serial.print("You entered: ");
+    Serial.println(turningSpeed);
+  }
+}
+
+
   int buttonState = digitalRead(buttonPin); // read to see if car should be started up (permanently driving until reset button is pressed)
   if (buttonState == HIGH){
     start = true;
   }
   if (start == true) {
-    drive();
+    drive(turningSpeed);
   }
 }
 
-void drive(){
+void drive(int turningSpeed){
   int leftSensorVal = digitalRead(irSensorLeftPin);
   int middleLeftSensorVal = digitalRead(irSensorLeftMiddlePin);
   int middleRightSensorVal = digitalRead(irSensorRightMiddlePin);
@@ -74,7 +88,7 @@ void drive(){
       leftMotor->setSpeed(0); // 0 - 255
       rightMotor->setSpeed(turningSpeed);
       hitLeft = false;
-      Serial.println("Going to middle left");
+      //Serial.println("Going to middle left");
       lastVal = 2;
       lastVal = "ML->J"; 
 
@@ -111,7 +125,7 @@ void drive(){
       //Serial.println("juggling");
       lastVal = "J"; 
   }
-  Serial.println(String(leftSensorVal) + "," + String(middleLeftSensorVal) + "," + String(middleRightSensorVal) + "," + String(rightSensorVal) + "," + String(lastVal));
+  //Serial.println(String(leftSensorVal) + "," + String(middleLeftSensorVal) + "," + String(middleRightSensorVal) + "," + String(rightSensorVal) + "," + String(lastVal));
 
 
 
